@@ -1,0 +1,6 @@
+[submodule "HomeCenter/HomeApp/services/openweather"]
+	path = HomeCenter/HomeApp/services/openweather
+	url = https://github.com/yuraisme/weather_from_openWeather.git
+[submodule "HomeCenter/HomeApp/services/tuya"]
+	path = HomeCenter/HomeApp/services/tuya
+	url = https://github.com/yuraisme/tuya_polling.git
