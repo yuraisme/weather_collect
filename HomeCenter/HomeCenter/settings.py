@@ -14,6 +14,11 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+import os
+import sys
+
+# Добавляем путь к модулю openweather
+sys.path.append(os.path.join(BASE_DIR, 'HomeApp', 'services', 'openweather'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -42,7 +47,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('*/1 * * * *','HomeApp.services.tasks.put_weather_to_bd' , '>> scheduled_job.log'  ),
+    ('*/25 * * * *','HomeApp.services.tasks.cron_task' , '>> scheduled_job.log'  ),
 ]
 
 MIDDLEWARE = [
@@ -114,18 +119,20 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'  # Укажите нужный часовой пояс
+USE_TZ = True  # Включите использование часовых поясов
 
 USE_I18N = True
 
-USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

@@ -8,13 +8,23 @@
     <title>Home Temp</title>
 </head>
 <body>
+    {% load static %}
 <div>
+    
     <center>
         {% if data is not None%}
             {% for key,value in data.items %}
-            <h1>{{key}}    </h1>
-            <h2>Value: {{value}}</h2>
-            <br><br>
+            <div class="card text-bg-secondary mb-3" style="max-width: 18rem;">
+                <div class="card-header">{{key}}</div>
+                <div class="card-body">
+                {% if key in "Погода" %}
+                  <h2 class="card-title">{{value}} <img src="{% static type_weather|add:'.png' %}" alt="My image"></h2>
+                {% else %}
+                 <h2 class="card-title">{{value}} </h2>
+                {% endif %}
+                </div>
+              </div>
+            <!-- <br><br> -->
             {% endfor %}
         {% endif %}    
    </center>
