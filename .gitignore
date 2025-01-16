@@ -1,0 +1,15 @@
+.env
+*.log
+.vscode
+*__pycache__*
+*.pyc
+HomeCenter/db.sqlite3
+HomeCenter/__pycache__
+HomeCenter/HomeApp/__pycache__
+HomeCenter/HomeCenter/__pycache__
+HomeApp/migrations/
+HomeApp/services/__pycache__/
+HomeApp/migrations/
+HomeApp/migrations/__pycache__/
+HomeCenter/HomeApp/services/openweather/__pycache__
+HomeCenter/HomeApp/services/__pycache__

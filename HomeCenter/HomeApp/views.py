@@ -28,7 +28,10 @@ def home(request):
                      'Туман':'fog',
                      'Гроза':'bolt',
                      }
-    return render(request, "home.html", {'data':data, 'type_weather':weather_icons.get(data['Погода'])})
+    return render(request, "home.html", {'data_outside':data, 
+                                         'type_weather':weather_icons.get(data['Погода']),
+                                        'data_inside': {'Температура':22}
+                                         })
 
 def db_get_inside_temp():
     all_inside_temps = InsideTemp.objects.latest('timestamp')

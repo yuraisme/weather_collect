@@ -11,7 +11,6 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(message)s"
 )
-Celcius :float
 
 def cron_task():
     """Put some data to DB"""
@@ -29,17 +28,18 @@ def db_add_inside_temp(data:Weather):
     InsideTemp.objects.create(
         temperature=14.3,
         humidity=54.0,
-        weather="Sunny"
+        battery_level = 100,
  
 )
 
 
 def db_add_outside_temp(data:Weather):
+    """requested data put to DB"""
     OutsideTemp.objects.create(
-    temperature=data.temperature,
-    humidity=data.humidity,
-    weather=data.weather_type.value
-   )
+        temperature=data.temperature,
+        humidity=data.humidity,
+        weather=data.weather_type.value
+       )
 
 
 def put_weather_to_bd():
@@ -59,9 +59,6 @@ def put_weather_to_bd():
     
     print(result)
     return result
-
-
-
 
 def put_home_temp_to_bd():
     pass

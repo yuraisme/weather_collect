@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "home-temp"
+version = "0.1.0"
+description = ""
+authors = ["yuraisme <yuraisme@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+django = "^5.1.5"
+django-crontab = "^0.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
