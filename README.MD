@@ -1,2 +1,6 @@
-DJANGO PROJECT FOR COLLECT Temperature and humidity inside the flat and outside
- Add weather chart
+## DJANGO PROJECT 
+collect temperature and humidity inside the flat and outside
+ 
+ ---
+ - add new jinja templates
+ - Add weather chart
