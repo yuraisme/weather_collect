@@ -17,13 +17,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 import os
 import sys
 
-# Добавляем путь к модулю openweather
-sys.path.append(os.path.join(BASE_DIR, 'HomeApp', 'services', 'openweather'))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+# Добавляем путь к каждому модулю
+sys.path.append(os.path.join(BASE_DIR, 'HomeApp', 'services'))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-(i0rg!cbl^^r%yalx%zzrdtw5&uan-2%j)ukuc6oyylh3s8xss'
 
@@ -47,8 +46,17 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('*/25 * * * *','HomeApp.services.tasks.cron_task' , '>> scheduled_job.log'  ),
+    ('*/30 * * * *','HomeApp.services.tasks.cron_task' , '>> scheduled_job.log'  ),
 ]
+# Настройки брокера (Redis)
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# Настройки для хранения результатов задач (опционально)
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+# Задачи, которые выполняются с высоким приоритетом
+CELERY_TASK_ROUTES = {
+    'myapp.tasks.*': {'queue': 'myqueue'},
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

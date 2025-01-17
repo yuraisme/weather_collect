@@ -13,9 +13,9 @@
 <div class="container">
     <div class="row">
         <!-- Первая колонка -->
-        <div class="col-md-4 offset-md-2">
+        <div class="col-md-5 offset-md-2">
             {% for key, value in data_outside.items %}
-            <div class="card text-bg-secondary text-center mb-2" style="max-width: 25rem">
+            <div class="card text-bg-secondary text-center mb-2" >
                 {% if key == "Погода" %}
                     <img src="{% static type_weather|add:'.png' %}" 
                          class="w-50 mx-auto card-img-top p-2" 
