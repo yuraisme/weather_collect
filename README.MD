@@ -3,4 +3,4 @@
 
 
 ---------------------
-. Add weather chart
+- Add weather chart
