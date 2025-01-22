@@ -48,15 +48,7 @@ INSTALLED_APPS = [
 CRONJOBS = [
     ('*/30 * * * *','HomeApp.services.tasks.cron_task' , '>> scheduled_job.log'  ),
 ]
-# Настройки брокера (Redis)
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-# Настройки для хранения результатов задач (опционально)
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
-# Задачи, которые выполняются с высоким приоритетом
-CELERY_TASK_ROUTES = {
-    'myapp.tasks.*': {'queue': 'myqueue'},
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -96,9 +88,6 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-        "TEST": {
-                "NAME": "mytestdatabase",
-        },
     },
 }
 
