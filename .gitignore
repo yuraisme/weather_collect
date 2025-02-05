@@ -3,7 +3,7 @@
 .vscode
 *__pycache__*
 *.pyc
-HomeCenter/db.sqlite3
+#HomeCenter/db.sqlite3
 HomeCenter/__pycache__
 HomeCenter/HomeApp/__pycache__
 HomeCenter/HomeCenter/__pycache__
