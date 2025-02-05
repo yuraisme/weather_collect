@@ -1,11 +1,18 @@
+from datetime import datetime
 import glob
+import json
 from re import L
+from zoneinfo import ZoneInfo
+from django.http import HttpResponse
 from django.shortcuts import render
 from HomeApp.models import InsideTemp, OutsideTemp
 from .services.openweather.weather_api_service import  Weather, get_weather
 from .services.openweather.coordinates import  get_coordinates
 from .services.openweather.exceptions import  ApiWeatherException
 from django.utils.timezone import localtime
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db import connection
+
 
 from .services.tasks import cron_task, put_weather_to_bd
 
@@ -33,6 +40,33 @@ def home(request):
                                          'type_weather':weather_icons.get(data['Погода']),
                                         'data_inside': home_temp,
                                          })
+def temperature_chart(request):
+    # data_inside = InsideTemp.objects.all().order_by('timestamp')
+    # data_outside = OutsideTemp.objects.all().order_by('timestamp')
+       
+    # res_chart_inside = [ dict(x=localtime(item.timestamp).strftime('%y-%m-%d %H:%M'), 
+    #                    y=item.temperature) for item in data_inside]  
+    
+    #Convert lists to JSON so they can be easily used in JavaScript
+    # print(json.dumps(timestamps_inside, cls=DjangoJSONEncoder))
+    collected_data = get_all_data()
+    inside_temperature = []
+    outside_temperature = []
+    inside_humadity = []
+    outside_humadity = []
+    for item in collected_data:
+        inside_temperature.append({'x':item['timestamp_'],
+                                  'y':item['avg_inside_temp']})
+
+        outside_temperature.append({'x':item['timestamp_'],
+                                  'y':item['out_temp_smoth']})
+
+
+    context = {        
+        'inside_temperature':json.dumps(inside_temperature, cls=DjangoJSONEncoder),
+        'outside_temperature':json.dumps(outside_temperature, cls=DjangoJSONEncoder),
+    }
+    return render(request, 'charts.html', context)
 
 def db_get_inside_temp():
     all_inside_temps = InsideTemp.objects.latest('timestamp')
@@ -49,3 +83,33 @@ def db_get_inside_temp():
 def db_get_outside_temp()->OutsideTemp:
     all_outside_temps = OutsideTemp.objects.latest('timestamp')
     return all_outside_temps
+
+def get_all_data():
+    query = """
+    SELECT 
+    strftime('%Y-%m-%d %H', datetime(it.timestamp, '+3 hours')) AS timestamp_,
+    AVG(ot.temperature) OVER (ORDER BY ot.timestamp ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS out_temp_smoth,
+    AVG(it.temperature) AS avg_inside_temp,
+    AVG(ot.temperature) AS avg_outside_temp,
+    AVG(it.humidity) AS avg_inside_humidity,
+    AVG(ot.humidity) AS avg_outside_humidity,
+    ot.weather 
+    FROM 
+        HomeApp_insidetemp AS it
+    JOIN 
+        HomeApp_outsidetemp AS ot
+    ON 
+        strftime('%Y-%m-%d %H:%M', it.timestamp) = strftime('%Y-%m-%d %H:%M', ot.timestamp)
+    GROUP BY 
+        timestamp_;
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        # Получаем названия колонок
+        columns = [col[0] for col in cursor.description]
+        # Преобразуем результат в список словарей
+        data = [dict(zip(columns, row)) for row in cursor.fetchall()] 
+
+    return data
+
+

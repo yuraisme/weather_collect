@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Temperature Chart with Day Highlight {% endblock title %}
+  <!-- Include Chart.js and the annotation plugin -->
+  {%block head %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  {%endblock head%}
+
+
+{% block header %} Temperature Chart by me {% endblock header%}
+
+{% block content%} 
+  <canvas id="myChart" width="800" height="400"></canvas>
+ <!-- <div> -->
+  <!-- <canvas id="myChart"></canvas> -->
+<!-- </div> -->
+<script>
+const ctx = document.getElementById('myChart');
+
+const xyValues_inside = JSON.parse('{{ inside_temperature|escapejs }}');
+const xyValues_outside = JSON.parse('{{ outside_temperature|escapejs }}');
+const options = {
+        layout: {
+            padding: 20
+        },
+        spanGaps: true,
+     
+        scales: {
+          y: {
+            position: 'left',   // Первая ось
+             min: 19,
+             max: 27
+        },
+        y1: {
+            position: 'right',  // Вторая ось справа
+             min: -10,
+             max: 20
+        }
+        },
+      }
+
+new Chart(ctx, {
+    type: 'line',
+    options: options,
+    data: {
+    datasets: [{
+      pointRadius: 3,
+      label: 'Temp inside',
+      borderColor: "red",
+      fill: false,
+      data: xyValues_inside,
+    },
+    {
+      yAxisID: 'y1',
+      pointRadius: 3,
+      label: 'Temp outside',
+    //   pointBackgroundColor: "rgba(0,0,255,1)",
+      borderColor: "blue",
+      fill: false,
+      borderJoinStyle:'round',
+      data: xyValues_outside,
+       
+    }
+]
+  },
+});
+
+
+
+</script> 
+{% endblock content %} 
