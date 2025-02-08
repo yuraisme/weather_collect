@@ -54,17 +54,28 @@ def temperature_chart(request):
     outside_temperature = []
     inside_humadity = []
     outside_humadity = []
+    timestamps = []
     for item in collected_data:
-        inside_temperature.append({'x':item['timestamp_'],
-                                  'y':item['avg_inside_temp']})
+        inside_temperature.append(#{'x':item['timestamp_'][2:]+':00',
+                                  item['avg_inside_temp'])
 
-        outside_temperature.append({'x':item['timestamp_'],
-                                  'y':item['out_temp_smoth']})
+        outside_temperature.append(#{'x':item['timestamp_'][2:]+':00',
+                                  item['out_temp_smooth'])
+         
+        inside_humadity.append({'x':item['timestamp_'][2:]+':00',
+                                  'y':item['avg_inside_humidity']})
 
+        outside_humadity.append({'x':item['timestamp_'][2:]+':00',
+                                  'y':item['avg_outside_humidity']})
+        # if "12" in item['timestamp_']:
+        timestamps.append([item['timestamp_'][2:-3], item['timestamp_'][-3:]+':00'])
 
     context = {        
         'inside_temperature':json.dumps(inside_temperature, cls=DjangoJSONEncoder),
         'outside_temperature':json.dumps(outside_temperature, cls=DjangoJSONEncoder),
+        'inside_humadity':json.dumps(inside_humadity, cls=DjangoJSONEncoder),
+        'outside_humadity':json.dumps(outside_humadity, cls=DjangoJSONEncoder),
+        'timestamps':json.dumps(timestamps, cls=DjangoJSONEncoder),
     }
     return render(request, 'charts.html', context)
 
@@ -88,7 +99,7 @@ def get_all_data():
     query = """
     SELECT 
     strftime('%Y-%m-%d %H', datetime(it.timestamp, '+3 hours')) AS timestamp_,
-    AVG(ot.temperature) OVER (ORDER BY ot.timestamp ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS out_temp_smoth,
+    AVG(ot.temperature) OVER (ORDER BY ot.timestamp ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS out_temp_smooth,
     AVG(it.temperature) AS avg_inside_temp,
     AVG(ot.temperature) AS avg_outside_temp,
     AVG(it.humidity) AS avg_inside_humidity,
@@ -109,7 +120,7 @@ def get_all_data():
         columns = [col[0] for col in cursor.description]
         # Преобразуем результат в список словарей
         data = [dict(zip(columns, row)) for row in cursor.fetchall()] 
-
+        # print(data)
     return data
 
 

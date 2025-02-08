@@ -6,35 +6,71 @@
   {%endblock head%}
 
 
-{% block header %} Temperature Chart by me {% endblock header%}
+<!-- {% block header %}  {% endblock header%} -->
 
 {% block content%} 
-  <canvas id="myChart" width="800" height="400"></canvas>
- <!-- <div> -->
-  <!-- <canvas id="myChart"></canvas> -->
-<!-- </div> -->
-<script>
-const ctx = document.getElementById('myChart');
+<canvas id="TempChart" width="800" height="360"></canvas>
 
+<script>
+const ctx = document.getElementById('TempChart');
 const xyValues_inside = JSON.parse('{{ inside_temperature|escapejs }}');
 const xyValues_outside = JSON.parse('{{ outside_temperature|escapejs }}');
+const temp_labels = JSON.parse('{{ timestamps|escapejs }}');
+// console.log(xyValues_inside);
 const options = {
+
         layout: {
-            padding: 20
+            padding: 20,
         },
-        spanGaps: true,
-     
+        spanGaps: true,     
         scales: {
+          x: {
+              autoskip:false,
+              // ticks: {
+              //   callback: function(val, index) {
+              //     return index % 10  === 0 ? this.getLabelForValue(val) : '';
+              //   }
+              // },
+          },
           y: {
-            position: 'left',   // Первая ось
-             min: 19,
-             max: 27
-        },
-        y1: {
-            position: 'right',  // Вторая ось справа
-             min: -10,
-             max: 20
-        }
+              position: 'left',   // Первая ось
+              min: 19,
+              max: 27,
+              labels:'Внутри',
+             
+              grid: {
+                tickColor: 'red'
+              },              
+              title: {
+                color: 'red',
+                display: true,
+                text: 'Inside',
+              },
+              ticks: {
+                 color: 'red',
+                 backdropColor:'red',
+                } 
+             
+          },
+          y1: {
+                position: 'right',  // Вторая ось справа
+                min: -10,
+                max: 20,
+                grid: {
+                  tickColor: 'blue',
+                },
+               
+                title: {
+                  color: 'rgb(162, 210, 255)',
+                  display: true,
+                  text: 'Outside'
+                },
+                ticks: {
+                 color: 'rgb(162, 210, 255)',
+                 backdropColor:'rgb(162, 210, 255)',
+                }     
+              
+          }
         },
       }
 
@@ -42,29 +78,121 @@ new Chart(ctx, {
     type: 'line',
     options: options,
     data: {
-    datasets: [{
+      labels:temp_labels,
+      
+      datasets: [{
+      
       pointRadius: 3,
       label: 'Temp inside',
       borderColor: "red",
       fill: false,
       data: xyValues_inside,
+      tension: 0.1,
     },
     {
       yAxisID: 'y1',
       pointRadius: 3,
       label: 'Temp outside',
     //   pointBackgroundColor: "rgba(0,0,255,1)",
-      borderColor: "blue",
+      borderColor: "rgb(162, 210, 255)",
       fill: false,
       borderJoinStyle:'round',
       data: xyValues_outside,
-       
+      tension: 0.1,       
     }
 ]
   },
 });
 
-
-
 </script> 
+
+<canvas id="HumadityChart" width="800" height="400"></canvas>
+<script>
+  const ctx_h = document.getElementById('HumadityChart');
+  const xyValues_inside_h = JSON.parse('{{inside_humadity|escapejs }}');
+  const xyValues_outside_h = JSON.parse('{{ outside_humadity|escapejs }}');
+  
+  const options_h = {
+  
+          layout: {
+              padding: 20,
+          },
+          // spanGaps: true,     
+          scales: {
+            x: {
+                autoskip:false,
+                ticks: {
+                  callback: function(val, index) {
+                    return index % 10  === 0 ? this.getLabelForValue(val) : '';
+                  }
+                },
+            },
+            y: {
+                position: 'left',   // Первая ось
+                // min: 19,
+                // max: 27,
+                labels:'Внутри',
+               
+                grid: {
+                  tickColor: 'red'
+                },              
+                title: {
+                  color: 'red',
+                },
+                ticks: {
+                    color: 'blue',
+                    backdropColor:'blue',
+                  } 
+               
+            },
+            y1: {
+                  position: 'right',  // Вторая ось справа
+                  min: 10,
+                  max: 100,
+                  grid: {
+                    tickColor: 'blue',
+                  },
+                 
+                  title: {
+                    color: 'blue',
+                    display: true,
+                    text: '%'
+                  },
+                  ticks: {
+                   color: 'blue',
+                   backdropColor:'blue',
+                  }     
+                
+            }
+          },
+        }
+  
+  new Chart(ctx_h, {
+      type: 'line',
+      options: options_h,
+      data: {
+      datasets: [{
+        pointRadius: 3,
+        label: 'Humadity inside',
+        borderColor: "rgb(244, 162, 97)",
+        fill: false,
+        data: xyValues_inside_h,
+        tension: 0.1,
+      },
+      {
+        yAxisID: 'y',
+        pointRadius: 3,
+        label: 'Humadity outside',
+      //   pointBackgroundColor: "rgba(0,0,255,1)",
+        borderColor: "rgb(102, 155, 188)",
+        fill: false,
+        borderJoinStyle:'round',
+        data: xyValues_outside_h,
+        tension: 0.1,       
+      }
+  ]
+    },
+  });
+  
+  </script>
 {% endblock content %} 
