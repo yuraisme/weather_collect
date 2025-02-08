@@ -10,7 +10,7 @@ from django.utils.timezone import localtime
 
 
 logging.basicConfig(
-    filename="/mnt/d/PROJECTS/PYTHON/DJango/home-temp/scheduled_task.log",
+    filename="scheduled_task.log",
     level=logging.INFO,
     format="%(asctime)s - %(message)s"
 )

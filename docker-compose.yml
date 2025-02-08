@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    container_name: homecenter_web
+    ports:
+      - "8000:8000"
+    volumes:
+      # Монтируем локальный db.sqlite3 в контейнер поверх /app/HomeCenter/db.sqlite3
+      - ./HomeCenter/db.sqlite3:/app/HomeCenter/db.sqlite3
+      # Если хотите, чтобы также лог-файлы/статические файлы были вне контейнера,
+      # можно добавить соответствующие volume:
+      - ./HomeCenter/static:/app/HomeCenter/static
+      # - ./HomeCenter/file.log:/app/HomeCenter/file.log
+    # Опционально, если нужно задать переменные окружения:
+    # environment:
+    #   - DJANGO_DEBUG=False
+    #   - SECRET_KEY=...
+    #   - ALLOWED_HOSTS=...
+    #   ...
+
