@@ -8,28 +8,35 @@
 </head>
 <body>
     <div>
-        <a class="btn btn-dark" href="/" role="Главная">Главная</a>
-        <a class="btn btn-dark" href="/chart"" role="Chart">Chart</a>
+        <a class="btn btn-dark" href="/" >Главная</a>
+        <a class="btn btn-dark" href="/chart" >Chart</a>
     </div>
+    
     {% if user.is_authenticated %}
-    <h3>{% block header %} {% endblock header %}</h3>
-    <div>{% block content%} {% endblock content %}</div>
+    
+        <h3>
+            {% block header %} 
+            {% endblock header %}
+        </h3>        
+        
+        <div>
+            {% block  content %}
+            {% endblock content %}
+        </div>
+        
     {% else %}
-    <br><br><br><br>    
-    <div
-        class="alert alert-warning"
-        role="alert"
-    >
-        <strong>Ты не авторизовался</strong
+        <br><br><br><br>    
+        <div
+            class="alert alert-warning"
+            role="alert"
         >
-        <!-- <a href="/admin" class="alert-link">Админка</a> -->
-        <center> <h2> <a class="btn btn-secondary" href="/admin">В админку</a> </h2> </center>
-    </div>
-    
-    
-    
+        <strong>Ты не авторизовался</strong>
+        <center> 
+            <h2> 
+                <a class="btn btn-secondary" href="/admin">В админку</a> 
+            </h2> 
+        </center>
+</div>
     {% endif %}
-    
-    <!-- <div>MyCorp. 2022. All rights reserved.</div> -->
 </body>
 </html>
