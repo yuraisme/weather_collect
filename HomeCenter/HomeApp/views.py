@@ -56,18 +56,12 @@ def temperature_chart(request):
     outside_humadity = []
     timestamps = []
     for item in collected_data:
-        inside_temperature.append(#{'x':item['timestamp_'][2:]+':00',
-                                  item['avg_inside_temp'])
-
-        outside_temperature.append(#{'x':item['timestamp_'][2:]+':00',
-                                  item['out_temp_smooth'])
-         
-        inside_humadity.append({'x':item['timestamp_'][2:]+':00',
-                                  'y':item['avg_inside_humidity']})
-
-        outside_humadity.append({'x':item['timestamp_'][2:]+':00',
-                                  'y':item['avg_outside_humidity']})
+        inside_temperature.append(item['avg_inside_temp'])
+        outside_temperature.append(item['out_temp_smooth'])         
+        inside_humadity.append(item['avg_inside_humidity'])
+        outside_humadity.append(item['avg_outside_humidity'])
         # if "12" in item['timestamp_']:
+        # чтобы в двух строчка отображать дата/время - chart.js требует list
         timestamps.append([item['timestamp_'][2:-3], item['timestamp_'][-3:]+':00'])
 
     context = {        

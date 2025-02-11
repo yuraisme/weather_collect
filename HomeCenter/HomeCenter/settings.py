@@ -27,7 +27,7 @@ sys.path.append(os.path.join(BASE_DIR, 'HomeApp', 'services'))
 SECRET_KEY = 'django-insecure-(i0rg!cbl^^r%yalx%zzrdtw5&uan-2%j)ukuc6oyylh3s8xss'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('*/30 * * * *','HomeApp.services.tasks.cron_task' , '>> scheduled_job.log'  ),
+    ('*/30 * * * *','HomeApp.services.tasks.cron_task' ),
 ]
 
 
@@ -128,9 +128,14 @@ USE_I18N = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Путь для nginx
+
+
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+# STATIC_ROOT = BASE_DIR / "staticfiles"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

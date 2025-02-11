@@ -111,7 +111,7 @@ new Chart(ctx, {
   const ctx_h = document.getElementById('HumadityChart');
   const xyValues_inside_h = JSON.parse('{{inside_humadity|escapejs }}');
   const xyValues_outside_h = JSON.parse('{{ outside_humadity|escapejs }}');
-  
+  const Humadity_labels = JSON.parse('{{ timestamps|escapejs }}');
   const options_h = {
   
           layout: {
@@ -121,11 +121,7 @@ new Chart(ctx, {
           scales: {
             x: {
                 autoskip:false,
-                ticks: {
-                  callback: function(val, index) {
-                    return index % 10  === 0 ? this.getLabelForValue(val) : '';
-                  }
-                },
+                
             },
             y: {
                 position: 'left',   // Первая ось
@@ -170,7 +166,9 @@ new Chart(ctx, {
   new Chart(ctx_h, {
       type: 'line',
       options: options_h,
+     
       data: {
+      labels: Humadity_labels,
       datasets: [{
         pointRadius: 3,
         label: 'Humadity inside',
