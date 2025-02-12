@@ -1,21 +1,41 @@
-version: '3.8'
 services:
   web:
     build: .
     container_name: homecenter_web
-    ports:
-      - "8000:8000"
+    restart: always
+    expose:
+      - "8000"
+    # ports:
+    #   - "8000:8000" 
+    networks:
+      - backend
+    environment:
+      - DJANGO_SETTINGS_MODULE=HomeCenter.settings
     volumes:
       # Монтируем локальный db.sqlite3 в контейнер поверх /app/HomeCenter/db.sqlite3
       - ./HomeCenter/db.sqlite3:/app/HomeCenter/db.sqlite3
-      # Если хотите, чтобы также лог-файлы/статические файлы были вне контейнера,
-      # можно добавить соответствующие volume:
-      - ./HomeCenter/static:/app/HomeCenter/static
-      # - ./HomeCenter/file.log:/app/HomeCenter/file.log
-    # Опционально, если нужно задать переменные окружения:
-    # environment:
-    #   - DJANGO_DEBUG=False
-    #   - SECRET_KEY=...
-    #   - ALLOWED_HOSTS=...
-    #   ...
+      # - ./staticfiles:/app/staticfiles  # Монтируем STATIC_ROOT
+    command: >
+      sh -c "service cron start &&
+             uv run python manage.py crontab add &&
+             uv run gunicorn HomeCenter.wsgi:application -t 90 -b 0.0.0.0:8000 --log-level DEBUG"
+  nginx:
+    image: nginx:latest
+    container_name: homecenter_nginx
+    restart: always
+    ports:
+      - "80:80"  # Пробрасываем порт 80 на хост
+    networks:
+      - backend
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf  # Монтируем конфиг Nginx
+      - ./HomeCenter/staticfiles:/static   # Монтируем STATIC_ROOT
+    depends_on:
+      - web
 
+volumes:
+  static_volume:  # Создаем volume для статики
+
+networks:
+  backend:
+    driver: bridge

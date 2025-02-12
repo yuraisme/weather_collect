@@ -1,0 +1,20 @@
+[project]
+name = "home-temp"
+version = "0.1.0"
+requires-python = ">=3.13"
+description = ""
+readme = "README.md"
+authors = [{name = "yuraisme", email = "yuraisme@mail.ru"}]
+dependencies = [
+    "[build-system]",
+    "django>=5.1.5",
+    "django-crontab>=0.7.1",
+    "gunicorn>=23.0.0",
+    "pydantic>=2.10.5",
+    "python-dotenv>=1.0.1",
+    "tinytuya>=1.16.0",
+]
+[dependency-groups]
+dev = [
+    "",
+]
