@@ -1,13 +1,13 @@
 import logging
-import datetime
-from re import A
+from HomeApp.views import get_all_data
 from openweather.weather_api_service import  Weather, get_weather
 from openweather.coordinates import  get_coordinates
 from openweather.exceptions import  ApiWeatherException
 from tuya.tuya_cloud import get_temp
 from HomeApp.models import InsideTemp, OutsideTemp
-from django.utils.timezone import localtime
 
+
+from django.core.cache import cache
 
 logging.basicConfig(
     # filename="scheduled_task.log",
@@ -15,8 +15,9 @@ logging.basicConfig(
     format="%(asctime)s - %(message)s"
 )
 
+
 def cron_task():
-    """Put some data to DB"""
+    """Put some data to DB & cach also"""
     coordinates = get_coordinates()
     logging.info("Put some data to DB")
     try:
@@ -26,13 +27,20 @@ def cron_task():
         print("Что-то с сервисом погоды, неудача")
     if weather:
        db_add_outside_temp(weather) 
+    
     #now Tuya home temp
     tuya_data = get_temp()
     if tuya_data:
         db_add_inside_temp(tuya_data)
     else:
-        print("Some fail coming")
-        logging.info("error Tuya")
+        print("Some fail came")
+        logging.error("error Tuya")
+    
+    collected_data = get_all_data()    
+    if collected_data:
+        cache.delete('chart_data')
+        cache.set('chart_data', collected_data, timeout=60*28)
+        
         
 def db_add_inside_temp(data):
     InsideTemp.objects.create(

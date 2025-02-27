@@ -1,20 +1,10 @@
-from datetime import datetime
-import glob
 import json
-from re import L
-from zoneinfo import ZoneInfo
-from django.http import HttpResponse
 from django.shortcuts import render
 from HomeApp.models import InsideTemp, OutsideTemp
-from .services.openweather.weather_api_service import  Weather, get_weather
-from .services.openweather.coordinates import  get_coordinates
-from .services.openweather.exceptions import  ApiWeatherException
 from django.utils.timezone import localtime
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection
-
-
-from .services.tasks import cron_task, put_weather_to_bd
+from django.core.cache import cache
 
 # Create your views here.
 def home(request):
@@ -49,7 +39,14 @@ def temperature_chart(request):
     
     #Convert lists to JSON so they can be easily used in JavaScript
     # print(json.dumps(timestamps_inside, cls=DjangoJSONEncoder))
-    collected_data = get_all_data()
+    
+   
+    collected_data = cache.get('chart_data')
+    if not collected_data:
+        collected_data = get_all_data()
+        # кэш хранится 20 минут
+        cache.set('chart_data', collected_data, timeout=60*20)
+
     inside_temperature = []
     outside_temperature = []
     inside_humadity = []

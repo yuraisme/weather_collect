@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('*/30 * * * *','HomeApp.services.tasks.cron_task' ),
+    ('0,30 * * * *','HomeApp.services.tasks.cron_task' ),
 ]
 
 
@@ -61,6 +61,14 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'HomeCenter.urls'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
 
 TEMPLATES = [
     {
