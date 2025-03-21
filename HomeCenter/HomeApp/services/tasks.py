@@ -6,7 +6,6 @@ from openweather.exceptions import  ApiWeatherException
 from tuya.tuya_cloud import get_temp
 from HomeApp.models import InsideTemp, OutsideTemp
 
-
 from django.core.cache import cache
 
 logging.basicConfig(
@@ -14,6 +13,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(message)s"
 )
+logger = logging.getLogger(__name__)
 
 
 def cron_task():
@@ -39,8 +39,10 @@ def cron_task():
     collected_data = get_all_data()    
     if collected_data:
         cache.delete('chart_data')
-        cache.set('chart_data', collected_data, timeout=60*28)
-        
+        cache.set('chart_data', collected_data, timeout=60*30)
+        logger.info('Cache was updated when added new values')
+    else:
+        logging.error("Can't update cash by cron")    
         
 def db_add_inside_temp(data):
     InsideTemp.objects.create(
