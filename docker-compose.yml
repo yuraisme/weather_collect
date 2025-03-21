@@ -2,39 +2,33 @@ services:
   web:
     build: .
     container_name: homecenter_web
-    restart: always
+    restart: unless-stopped
     expose:
       - "8000"
-    # ports: 
-    #   - "8000:8000" 
     networks:
       - backend
     environment:
       - DJANGO_SETTINGS_MODULE=HomeCenter.settings
     volumes:
-      # Монтируем локальный db.sqlite3 в контейнер поверх /app/HomeCenter/db.sqlite3
-      - ./HomeCenter/db.sqlite3:/app/HomeCenter/db.sqlite3
-      # - ./staticfiles:/app/staticfiles  # Монтируем STATIC_ROOT
+      - ./HomeCenter/db.sqlite3:/app/HomeCenter/db.sqlite3:nocopy
     command: >
       sh -c "service cron start &&
              uv run python manage.py crontab add &&
-             uv run gunicorn HomeCenter.wsgi:application -t 90 -b 0.0.0.0:8000 --log-level DEBUG"
+             uv run gunicorn HomeCenter.wsgi:application -t 90 -b 0.0.0.0:8000 --log-level INFO"
+
   nginx:
-    image: nginx:latest
+    image: nginx:alpine  # Используем более легкий образ Alpine
     container_name: homecenter_nginx
-    restart: always
+    restart: unless-stopped
     ports:
-      - "80:80"  # Пробрасываем порт 80 на хост
+      - "8080:80"
     networks:
       - backend
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf  # Монтируем конфиг Nginx
-      - ./HomeCenter/staticfiles:/static   # Монтируем STATIC_ROOT
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./HomeCenter/staticfiles:/static:ro
     depends_on:
       - web
-
-volumes:
-  static_volume:  # Создаем volume для статики
 
 networks:
   backend:
