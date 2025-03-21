@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-(i0rg!cbl^^r%yalx%zzrdtw5&uan-2%j)ukuc6oyylh3s8xss
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['gitlab-projects.online', 'localhost', '127.0.0.1']
 
 
 # Application definition
