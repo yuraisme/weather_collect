@@ -10,9 +10,7 @@ RUN apt-get update && \
 WORKDIR /app
 
 # Копируем только необходимые файлы (исключаем временные и большие файлы)
-COPY requirements.txt .env ./
-COPY HomeCenter HomeCenter/
-COPY manage.py .
+COPY . .
 
 #RUN uv venv
 RUN uv sync
